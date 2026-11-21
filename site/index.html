@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X Following Digest — @malloc007</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>𝕏</text></svg>">
+<style>
+  :root {
+    --bg: #000;
+    --panel: #16181c;
+    --border: #2f3336;
+    --text: #e7e9ea;
+    --sub: #71767b;
+    --accent: #1d9bf0;
+    --accent-dim: rgba(29,155,240,.15);
+    --ja-bg: #0c1a26;
+    --badge: #00ba7c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, "Hiragino Sans", "Segoe UI", Roboto, sans-serif; font-size: 15px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(0,0,0,.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  header h1 { font-size: 18px; font-weight: 800; }
+  .stats { color: var(--sub); font-size: 13px; }
+  .filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+  .filters label { font-size: 13px; color: var(--sub); display: flex; gap: 4px; align-items: center; cursor: pointer; }
+  .filters input[type="checkbox"] { accent-color: var(--accent); }
+  .filters input[type="text"], .filters select {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    border-radius: 999px; padding: 6px 14px; font-size: 13px; outline: none;
+  }
+  .filters input[type="text"]:focus { border-color: var(--accent); }
+
+  .layout { display: grid; grid-template-columns: 320px 1fr; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  /* ---- calendar ---- */
+  .calendar-pane { border-right: 1px solid var(--border); padding: 16px; position: sticky; top: 57px; height: calc(100vh - 57px); overflow-y: auto; }
+  @media (max-width: 900px) { .calendar-pane { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); } }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .cal-nav button {
+    background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px;
+    width: 32px; height: 32px; cursor: pointer; font-size: 15px;
+  }
+  .cal-nav button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .cal-nav button:disabled { opacity: .3; cursor: default; }
+  .cal-title { font-weight: 700; font-size: 15px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-dow { text-align: center; font-size: 11px; color: var(--sub); padding: 4px 0; }
+  .cal-day {
+    aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-size: 13px;
+    cursor: pointer; position: relative; border: 1px solid transparent;
+  }
+  .cal-day.empty { cursor: default; }
+  .cal-day.has { background: var(--accent-dim); }
+  .cal-day.has:hover { border-color: var(--accent); }
+  .cal-day.no-posts { color: #536471; cursor: default; }
+  .cal-day.selected { background: var(--accent); color: #fff; font-weight: 700; }
+  .cal-day.today { outline: 1px solid var(--accent); outline-offset: -1px; }
+  .cal-day .count { font-size: 9px; color: inherit; opacity: .8; line-height: 1; }
+  .cal-legend { margin-top: 10px; font-size: 12px; color: var(--sub); display: flex; flex-direction: column; gap: 4px; }
+  .clear-date {
+    margin-top: 10px; width: 100%; padding: 8px; border-radius: 8px;
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    cursor: pointer; font-size: 13px;
+  }
+  .clear-date:hover { border-color: var(--accent); }
+
+  /* ---- feed ---- */
+  .feed { min-width: 0; }
+  .feed-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 10px; position: sticky; top: 57px;
+    background: rgba(0,0,0,.85); backdrop-filter: blur(12px); z-index: 5;
+  }
+  .feed-header .date-title { font-size: 17px; font-weight: 800; }
+  .feed-header .n { color: var(--sub); font-size: 13px; }
+
+  .tweet { display: flex; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  .tweet:hover { background: rgba(255,255,255,.02); }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background: var(--panel); }
+  .tw-body { min-width: 0; flex: 1; }
+  .tw-head { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .tw-name { font-weight: 700; }
+  .tw-handle, .tw-time { color: var(--sub); font-size: 13px; }
+  .rt-badge { color: var(--badge); font-size: 12px; margin-bottom: 4px; }
+  .verified { color: var(--accent); font-size: 13px; }
+  .tw-text { white-space: pre-wrap; word-wrap: break-word; margin: 4px 0; line-height: 1.45; }
+  .tw-ja {
+    margin: 8px 0 4px; padding: 10px 12px; background: var(--ja-bg);
+    border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+    white-space: pre-wrap; word-wrap: break-word; line-height: 1.5;
+  }
+  .tw-ja::before { content: '🇯🇵 翻訳'; display: block; font-size: 11px; color: var(--accent); margin-bottom: 4px; font-weight: 700; }
+  .tw-orig-label { font-size: 11px; color: var(--sub); margin-top: 6px; }
+  .media { display: grid; gap: 6px; margin-top: 8px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .media img { width: 100%; border-radius: 12px; border: 1px solid var(--border); max-height: 300px; object-fit: cover; }
+  .media video { width: 100%; border-radius: 12px; border: 1px solid var(--border); max-height: 300px; }
+  .quote {
+    margin-top: 8px; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+    font-size: 14px;
+  }
+  .quote .q-ja { margin-top: 6px; padding: 8px 10px; background: var(--ja-bg); border-radius: 6px; }
+  .tw-stats { display: flex; gap: 18px; margin-top: 8px; color: var(--sub); font-size: 13px; }
+  .load-more {
+    display: block; width: calc(100% - 40px); margin: 20px; padding: 12px;
+    background: var(--accent); color: #fff; border: none; border-radius: 999px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .empty-feed { padding: 60px 20px; text-align: center; color: var(--sub); }
+  #lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,.9); z-index: 100;
+    display: none; align-items: center; justify-content: center; cursor: zoom-out;
+  }
+  #lightbox img, #lightbox video { max-width: 92vw; max-height: 92vh; }
+  #lightbox.open { display: flex; }
+</style>
+</head>
+<body>
+<header>
+  <h1>𝕏 Following Digest</h1>
+  <span class="stats" id="hstats">loading…</span>
+  <div class="filters">
+    <label><input type="checkbox" id="f-post" checked>ポスト</label>
+    <label><input type="checkbox" id="f-repost" checked>リポスト</label>
+    <label><input type="checkbox" id="f-ja" checked>翻訳表示</label>
+    <input type="text" id="f-author" placeholder="アカウント検索 (@handle)">
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="calendar-pane">
+    <div class="cal-nav">
+      <button id="cal-prev">‹</button>
+      <div class="cal-title" id="cal-title"></div>
+      <button id="cal-next">›</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <button class="clear-date" id="clear-date">すべての日付を表示</button>
+    <div class="cal-legend" id="cal-legend"></div>
+  </aside>
+  <main class="feed">
+    <div class="feed-header">
+      <span class="date-title" id="feed-title"></span>
+      <span class="n" id="feed-count"></span>
+    </div>
+    <div id="feed-list"></div>
+    <div id="feed-tail"></div>
+  </main>
+</div>
+<div id="lightbox"></div>
+
+<script>
+const PAGE = 100;
+let DATA = null;
+let selectedDate = null;
+let calMonth = null; // {y, m}
+let shown = 0;
+let filtered = [];
+
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// t.coリンクを表示テキストで置換 & リンク化
+function linkify(it) {
+  let t = esc(it.text);
+  // URLは先にプレースホルダ化 (挿入HTML内の @/# を後続置換が壊さないように)
+  const anchors = [];
+  for (const u of it.urls ?? []) {
+    if (!u.short || !t.includes(esc(u.short))) continue;
+    const label = esc(u.display || u.expanded || u.short);
+    anchors.push(`<a href="${esc(u.expanded || u.short)}" target="_blank" rel="noopener">${label}</a>`);
+    t = t.replaceAll(esc(u.short), `\u0001${anchors.length - 1}\u0001`);
+  }
+  t = t.replace(/@([A-Za-z0-9_]+)/g, '<a href="https://x.com/$1" target="_blank" rel="noopener">@$1</a>');
+  t = t.replace(/(?<!&)#([^\s#@]+)/g, '<a href="https://x.com/hashtag/$1" target="_blank" rel="noopener">#$1</a>');
+  t = t.replace(/\u0001(\d+)\u0001/g, (_, i) => anchors[+i]);
+  return t;
+}
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function cardHTML(it) {
+  const u = it.author || it.user;
+  const rt = it.type === 'repost' && it.reposted_by
+    ? `<div class="rt-badge">🔁 ${esc(it.reposted_by.name)} (@${esc(it.reposted_by.screen_name)}) がリポスト</div>` : '';
+  const media = (it.media ?? []).length
+    ? `<div class="media">${it.media.map(m => m.video
+        ? `<video src="${esc(m.video)}" poster="${esc(m.url)}" controls muted></video>`
+        : `<img src="${esc(m.url)}" loading="lazy" alt="">`).join('')}</div>` : '';
+  const ja = it.ja && $('#f-ja').checked
+    ? `<div class="tw-ja">${esc(it.ja)}</div>` : '';
+  const quote = it.quoted ? `
+    <div class="quote">
+      <div class="tw-head"><span class="tw-name">${esc(it.quoted.author?.name ?? '?')}</span>
+      <span class="tw-handle">@${esc(it.quoted.author?.screen_name ?? '')}</span></div>
+      <div class="tw-text">${esc(it.quoted.text)}</div>
+      ${it.quoted.ja && $('#f-ja').checked ? `<div class="q-ja">${esc(it.quoted.ja)}</div>` : ''}
+    </div>` : '';
+  return `<article class="tweet">
+    <a href="https://x.com/${esc(u.screen_name)}" target="_blank" rel="noopener"><img class="avatar" src="${esc(u.avatar)}" loading="lazy" alt=""></a>
+    <div class="tw-body">
+      ${rt}
+      <div class="tw-head">
+        <a class="tw-name" href="https://x.com/${esc(u.screen_name)}" target="_blank" rel="noopener">${esc(u.name)}</a>
+        ${u.verified ? '<span class="verified">✔</span>' : ''}
+        <span class="tw-handle">@${esc(u.screen_name)}</span>
+        <span class="tw-time">· ${fmtTime(it.created_at)}</span>
+        <a class="tw-time" href="${esc(it.status_url)}" target="_blank" rel="noopener">𝕏で開く</a>
+      </div>
+      <div class="tw-text">${linkify(it)}</div>
+      ${ja}
+      ${quote}
+      ${media}
+      <div class="tw-stats">
+        <span>💬 ${it.stats.replies}</span><span>🔁 ${it.stats.reposts}</span>
+        <span>❤ ${it.stats.likes}</span><span>👁 ${it.stats.views.toLocaleString()}</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+function applyFilters() {
+  const post = $('#f-post').checked, repost = $('#f-repost').checked;
+  const q = $('#f-author').value.trim().toLowerCase().replace(/^@/, '');
+  filtered = DATA.tweets.filter(it => {
+    if (selectedDate && it.date !== selectedDate) return false;
+    if (it.type === 'post' && !post) return false;
+    if (it.type === 'repost' && !repost) return false;
+    if (q) {
+      const u = it.author ?? it.user;
+      const rb = it.reposted_by;
+      const hit = u.screen_name.toLowerCase().includes(q) || u.name.toLowerCase().includes(q)
+        || (rb && (rb.screen_name.toLowerCase().includes(q) || rb.name.toLowerCase().includes(q)));
+      if (!hit) return false;
+    }
+    return true;
+  });
+  shown = 0;
+  $('#feed-list').innerHTML = '';
+  $('#feed-title').textContent = selectedDate ?? 'すべての日付';
+  $('#feed-count').textContent = `${filtered.length}件`;
+  renderMore();
+}
+
+function renderMore() {
+  const slice = filtered.slice(shown, shown + PAGE);
+  $('#feed-list').insertAdjacentHTML('beforeend', slice.map(cardHTML).join(''));
+  shown += slice.length;
+  $('#feed-tail').innerHTML = shown < filtered.length
+    ? `<button class="load-more" onclick="renderMore()">さらに表示 (${filtered.length - shown}件)</button>` : '';
+}
+
+/* ---- calendar ---- */
+function renderCalendar() {
+  const { y, m } = calMonth;
+  $('#cal-title').textContent = `${y}年${m + 1}月`;
+  const first = new Date(y, m, 1);
+  const startDow = first.getDay();
+  const days = new Date(y, m + 1, 0).getDate();
+  const todayJst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  let html = ['日','月','火','水','木','金','土'].map(d => `<div class="cal-dow">${d}</div>`).join('');
+  for (let i = 0; i < startDow; i++) html += '<div class="cal-day empty"></div>';
+  for (let d = 1; d <= days; d++) {
+    const ds = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const n = DATA.counts[ds] ?? 0;
+    const cls = ['cal-day', n ? 'has' : 'no-posts',
+      selectedDate === ds ? 'selected' : '', ds === todayJst ? 'today' : ''].join(' ');
+    html += `<div class="${cls}" data-date="${ds}">${d}${n ? `<span class="count">${n}</span>` : ''}</div>`;
+  }
+  $('#cal-grid').innerHTML = html;
+  $('#cal-grid').querySelectorAll('.cal-day.has').forEach(el => {
+    el.onclick = () => {
+      selectedDate = selectedDate === el.dataset.date ? null : el.dataset.date;
+      renderCalendar(); applyFilters();
+    };
+  });
+  // 月移動の可否 (データ範囲内のみ)
+  const dates = Object.keys(DATA.counts).sort();
+  const curKey = `${y}${String(m + 1).padStart(2, '0')}`;
+  $('#cal-prev').disabled = curKey <= dates[0].slice(0, 4) + dates[0].slice(5, 7);
+  $('#cal-next').disabled = curKey >= dates[dates.length - 1].slice(0, 4) + dates[dates.length - 1].slice(5, 7);
+}
+
+async function init() {
+  const res = await fetch('data.json');
+  DATA = await res.json();
+  const dates = Object.keys(DATA.counts).sort();
+  const total = DATA.tweets.length;
+  const tr = DATA.tweets.filter(t => t.ja).length;
+  $('#hstats').textContent =
+    `@${DATA.owner} · フォロー ${DATA.following_count} · ${total}件 (${dates[0]} 〜 ${dates[dates.length - 1]}) · 翻訳 ${tr}件`;
+
+  selectedDate = dates[dates.length - 1]; // 最新日を初期選択
+  const [y, m] = selectedDate.split('-').map(Number);
+  calMonth = { y, m: m - 1 };
+
+  $('#cal-prev').onclick = () => { calMonth.m--; if (calMonth.m < 0) { calMonth.m = 11; calMonth.y--; } renderCalendar(); };
+  $('#cal-next').onclick = () => { calMonth.m++; if (calMonth.m > 11) { calMonth.m = 0; calMonth.y++; } renderCalendar(); };
+  $('#clear-date').onclick = () => { selectedDate = null; renderCalendar(); applyFilters(); };
+  for (const id of ['f-post', 'f-repost', 'f-ja']) $('#' + id).onchange = applyFilters;
+  $('#f-author').oninput = applyFilters;
+  $('#lightbox').onclick = () => $('#lightbox').classList.remove('open');
+  document.body.addEventListener('click', e => {
+    if (e.target.matches('.media img')) {
+      $('#lightbox').innerHTML = `<img src="${e.target.src}">`;
+      $('#lightbox').classList.add('open');
+    }
+  });
+
+  renderCalendar();
+  applyFilters();
+}
+init();
+</script>
+</body>
+</html>
