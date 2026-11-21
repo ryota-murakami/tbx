@@ -1,7 +1,6 @@
 data/raw*/
 data/*.log
 data/scrape_state*.json
-site/data.json
 .playwright-cli/
 pw-state.json
 node_modules/

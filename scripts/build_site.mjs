@@ -34,6 +34,6 @@ const payload = {
   tweets: out,
 };
 
-fs.mkdirSync('site', { recursive: true });
-fs.writeFileSync('site/data.json', JSON.stringify(payload));
-console.log(`site/data.json: ${out.length} tweets, ${(fs.statSync('site/data.json').size / 1e6).toFixed(1)}MB`);
+fs.mkdirSync('docs', { recursive: true });
+fs.writeFileSync('docs/data.json', JSON.stringify(payload));
+console.log(`docs/data.json: ${out.length} tweets, ${(fs.statSync('docs/data.json').size / 1e6).toFixed(1)}MB`);
