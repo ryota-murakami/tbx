@@ -5,3 +5,4 @@ data/scrape_state*.json
 pw-state.json
 node_modules/
 .DS_Store
+data/.env
