@@ -21,6 +21,26 @@ cd docs && python3 -m http.server 8321
 | 5 | `scripts/translate.mjs` | 非日本語テキストを gpt-4.1-mini で翻訳 → `data/translations.json` (再開可) |
 | 6 | `scripts/build_site.mjs` | `docs/data.json` 生成 |
 
+## 自動更新 (launchd)
+
+`~/Library/LaunchAgents/io.tbx.digest-update.plist` で毎朝 8:00 に `scripts/update.sh` を実行。
+増分 scrape → 翻訳 → `docs/data.json` 再生成 → 差分があれば commit & push（Pages 自動再デプロイ）。
+
+```bash
+# 手動実行
+bash scripts/update.sh
+
+# 状態確認 / ログ
+launchctl list | grep tbx
+tail -20 data/update.log
+
+# 解除
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/io.tbx.digest-update.plist
+```
+
+- 失敗時は macOS 通知で知らせる（osascript）。
+- `data/.env` に `OPENAI_API_KEY=...` が必要（gitignore 対象）。
+
 ## 注意
 
 - `scripts/xapi.mjs` は `/tmp/pw-state.json` から X のクッキーを読む。期限切れなら cookie skill で再エクスポート。

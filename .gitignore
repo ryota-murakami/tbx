@@ -6,3 +6,5 @@ pw-state.json
 node_modules/
 .DS_Store
 data/.env
+data/.scrape_state_inc.json
+data/.update.lock
