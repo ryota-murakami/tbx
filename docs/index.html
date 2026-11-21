@@ -248,6 +248,13 @@ function linkify(it) {
     anchors.push(`<a href="${esc(u.expanded || u.short)}" target="_blank" rel="noopener">${label}</a>`);
     t = t.replaceAll(esc(u.short), `\u0001${anchors.length - 1}\u0001`);
   }
+  // URLエンティティに載らない生URL (動画添付のt.co等) もリンク化。末尾の句読点は除外
+  t = t.replace(/https?:\/\/[^\s<"']+/g, url => {
+    const m = url.match(/((?:&(?:#\d+|\w+);)|[。、，．,.!?…：；:;\]）)】」』]+)+$/u);
+    const clean = m ? url.slice(0, -m[0].length) : url;
+    anchors.push(`<a href="${clean}" target="_blank" rel="noopener">${clean}</a>`);
+    return `\u0001${anchors.length - 1}\u0001${m ? m[0] : ''}`;
+  });
   t = t.replace(/@([A-Za-z0-9_]+)/g, '<a href="https://x.com/$1" target="_blank" rel="noopener">@$1</a>');
   t = t.replace(/(?<!&)#([^\s#@]+)/g, '<a href="https://x.com/hashtag/$1" target="_blank" rel="noopener">#$1</a>');
   t = t.replace(/\u0001(\d+)\u0001/g, (_, i) => anchors[+i]);
