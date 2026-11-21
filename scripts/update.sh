@@ -5,19 +5,14 @@
 set -uo pipefail
 export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
-# node解決: 対話シェルの mise shim は非対話環境でバージョン解決できないため実バイナリを使う
+# node解決: vp(Vite+) の node を使う (非対話環境でも動作)。mise shim は使わない
 NODE_BIN=""
 for c in \
-  "$HOME/.local/share/mise/installs/node/lts/bin/node" \
-  "$HOME/.local/share/mise/installs/node/latest/bin/node" \
+  "$HOME/.vite-plus/bin/node" \
   /opt/homebrew/bin/node \
   "$(command -v node 2>/dev/null || true)"; do
   [ -n "$c" ] && [ -x "$c" ] && "$c" --version >/dev/null 2>&1 && NODE_BIN="$c" && break
 done
-if [ -z "$NODE_BIN" ]; then
-  # 最終手段: installs 配下の最大バージョン
-  NODE_BIN=$(find "$HOME/.local/share/mise/installs/node" -maxdepth 3 -name node -type f 2>/dev/null | sort -V | tail -1)
-fi
 [ -n "$NODE_BIN" ] || { echo "node not found"; exit 1; }
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
