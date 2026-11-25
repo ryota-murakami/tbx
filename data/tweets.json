@@ -1,5 +1,149 @@
 [
  {
+  "id": "2125513590543368566",
+  "type": "repost",
+  "created_at": "Wed Nov 25 08:55:04 +0000 2026",
+  "ts": 1795596904000,
+  "user": {
+   "id": "2832427459",
+   "name": "lauren",
+   "screen_name": "poteto",
+   "avatar": "https://pbs.twimg.com/profile_images/2093473719830315008/oo09g1Ov_normal.jpg",
+   "verified": true
+  },
+  "author": {
+   "id": "742673143",
+   "name": "OrcDev",
+   "screen_name": "orcdev",
+   "avatar": "https://pbs.twimg.com/profile_images/1756766826736893952/6Gvg6jha_normal.jpg",
+   "verified": true
+  },
+  "reposted_by": {
+   "id": "2832427459",
+   "name": "lauren",
+   "screen_name": "poteto",
+   "avatar": "https://pbs.twimg.com/profile_images/2093473719830315008/oo09g1Ov_normal.jpg",
+   "verified": true
+  },
+  "text": "Tell your Grok Bot to watch this video.",
+  "lang": "en",
+  "media": [
+   {
+    "type": "video",
+    "url": "https://pbs.twimg.com/amplify_video_thumb/2125513194185572352/img/VneZqaqN52FbZndL.jpg",
+    "video": "https://video.twimg.com/amplify_video/2125513194185572352/vid/avc1/320x568/UL4ZbvN3IS2Mug5b.mp4?tag=29"
+   }
+  ],
+  "urls": [],
+  "quoted": {
+   "id": "2116576229319233596",
+   "author": {
+    "id": "2832427459",
+    "name": "lauren",
+    "screen_name": "poteto",
+    "avatar": "https://pbs.twimg.com/profile_images/2093473719830315008/oo09g1Ov_normal.jpg",
+    "verified": true
+   },
+   "text": "here’s a short grok bot guide on how i create high quality bots and manage my team. ask @bot to read this post and help you improve your team!\n\n• add dr eggbot to your team! he’s my bot designer that i use to create bots\n• you don’t need a lot of bots. a few good bots can be more useful and easier to manage than a large team\n• tell your bots to create skills for itself as you give it instructions on how to do tasks. this lets them do them more consistently even over long conversations. you can even ask it to create a private github repo for you to store all your skills if you want them preserved independently\n• add connectors, use the vault, and give access to all the tools you use to do your work. you can also ask your bot to setup its own email and it can sign up for its own accounts for better separation\n• thinking about all the work you do by hand, or steps in your workflows where you have to copy and paste information back to your bot. ask your bot how it can do that for you instead!\n• imagine you hired an intern, how would you onboard them and help them do the work correctly and efficiently? introduce yourself to your bot and describe the work you do, then ask it how it can help you automate it\n\nand my favorite tip: use voice mode or the transcription option! it’s a good way to just brain dump a lot of information. then, at the end, tell your bot to “restate this in your own words” so you can confirm it understood you\n\nhttps://t.co/ajrjeHdzUO",
+   "lang": "en"
+  },
+  "stats": {
+   "likes": 7,
+   "reposts": 1,
+   "replies": 0,
+   "views": 289
+  },
+  "status_url": "https://x.com/orcdev/status/2125513387366809620"
+ },
+ {
+  "id": "2125512773144870962",
+  "type": "post",
+  "created_at": "Wed Nov 25 08:51:49 +0000 2026",
+  "ts": 1795596709000,
+  "user": {
+   "id": "1014472751883563008",
+   "name": "SaltyAom",
+   "screen_name": "saltyAom",
+   "avatar": "https://pbs.twimg.com/profile_images/2100107766669217792/7xynIpts_normal.jpg",
+   "verified": true
+  },
+  "author": {
+   "id": "1014472751883563008",
+   "name": "SaltyAom",
+   "screen_name": "saltyAom",
+   "avatar": "https://pbs.twimg.com/profile_images/2100107766669217792/7xynIpts_normal.jpg",
+   "verified": true
+  },
+  "reposted_by": null,
+  "text": "Why am I not in Japan rn",
+  "lang": "en",
+  "media": [],
+  "urls": [],
+  "quoted": {
+   "id": "2125423648110735562",
+   "author": {
+    "id": "1467658592",
+    "name": "あにしゅが❤︎",
+    "screen_name": "animesugar_jp",
+    "avatar": "https://pbs.twimg.com/profile_images/2021241760484388864/vw7_rWBM_normal.jpg",
+    "verified": true
+   },
+   "text": "『劇場版 魔法少女まどか☆マギカ〈ワルプルギスの廻天〉』 2026年あにしゅがクリスマスケーキ＆ガラスプレートの発売が決定！ケーキにはハート型アクリルコースターがつきます。\n詳細はこちらから\nhttps://t.co/6Sglea6jfN\n\n#まどかマギカ",
+   "lang": "ja"
+  },
+  "stats": {
+   "likes": 1,
+   "reposts": 0,
+   "replies": 0,
+   "views": 55
+  },
+  "status_url": "https://x.com/saltyAom/status/2125512773144870962"
+ },
+ {
+  "id": "2125511390232564024",
+  "type": "post",
+  "created_at": "Wed Nov 25 08:46:20 +0000 2026",
+  "ts": 1795596380000,
+  "user": {
+   "id": "720084689579417600",
+   "name": "Takuya 🐾 devaslife",
+   "screen_name": "inkdrop_app",
+   "avatar": "https://pbs.twimg.com/profile_images/1304019816823488513/p0kzmQhD_normal.jpg",
+   "verified": true
+  },
+  "author": {
+   "id": "720084689579417600",
+   "name": "Takuya 🐾 devaslife",
+   "screen_name": "inkdrop_app",
+   "avatar": "https://pbs.twimg.com/profile_images/1304019816823488513/p0kzmQhD_normal.jpg",
+   "verified": true
+  },
+  "reposted_by": null,
+  "text": "Implemented a setup wizard to improve the onboarding flow. Also added a moderate effect to celebrate finishing it :)",
+  "lang": "en",
+  "media": [
+   {
+    "type": "video",
+    "url": "https://pbs.twimg.com/amplify_video_thumb/2125511119855120384/img/As0tRynLAG4j0o0v.jpg",
+    "video": "https://video.twimg.com/amplify_video/2125511119855120384/vid/avc1/412x270/11qAvUy1oq9dXT4i.mp4?tag=29"
+   },
+   {
+    "type": "photo",
+    "url": "https://pbs.twimg.com/media/HX9VHKsaIAAUJwy.jpg",
+    "video": null
+   }
+  ],
+  "urls": [],
+  "quoted": null,
+  "stats": {
+   "likes": 4,
+   "reposts": 1,
+   "replies": 1,
+   "views": 270
+  },
+  "status_url": "https://x.com/inkdrop_app/status/2125511390232564024"
+ },
+ {
   "id": "2125508295842730368",
   "type": "post",
   "created_at": "Wed Nov 25 08:34:02 +0000 2026",
