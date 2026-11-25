@@ -62,8 +62,9 @@ STOP_TS=$("$NODE_BIN" -e 'try{const i=JSON.parse(require("fs").readFileSync("dat
 N=$(find data -maxdepth 1 -type d -name 'raw*' | wc -l | tr -d ' ')
 RAW="data/raw$((N + 1))"
 
-# 4. 増分 scrape
-env RAW_DIR="$RAW" STATE_FILE="data/.scrape_state_inc.json" STOP_BEFORE_TS="$STOP_TS" \
+# 4. 増分 scrape (旧方式の共有 state が残っていたら除去 — 古いカーソルで再開すると新着が取れない)
+rm -f data/.scrape_state_inc.json
+env RAW_DIR="$RAW" STATE_FILE="$RAW/scrape_state.json" STOP_BEFORE_TS="$STOP_TS" \
   "$NODE_BIN" scripts/scrape.mjs >> "$LOG" 2>&1
 scrape_rc=$?
 if [ "$scrape_rc" -eq 2 ]; then
