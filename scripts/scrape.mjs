@@ -46,6 +46,8 @@ function bottomCursor(entries) {
 
 let { cursor, page } = state;
 let consecutiveErrors = 0;
+let okPages = 0;
+let sawAuthError = false;
 
 while (page < MAX_PAGES) {
   const file = `${RAW_DIR}/page_${String(page).padStart(4, '0')}.json`;
@@ -66,6 +68,7 @@ while (page < MAX_PAGES) {
     }
 
     if (res.status !== 200) {
+      if (res.status === 401 || res.status === 403) sawAuthError = true;
       consecutiveErrors++;
       const wait = Math.min(60000, 5000 * consecutiveErrors ** 2);
       console.error(`[page ${page}] status ${res.status} (x${consecutiveErrors}), waiting ${wait}ms`);
@@ -77,6 +80,7 @@ while (page < MAX_PAGES) {
     fs.writeFileSync(file, res.text);
   }
 
+  okPages++;
   const data = JSON.parse(fs.readFileSync(file, 'utf8'));
   const entries = parseEntries(data);
   // cutoff判定は実ツイート(tweet-*)のみ — promoted/who-to-follow は古い日付が混ざる
@@ -105,6 +109,15 @@ while (page < MAX_PAGES) {
     break;
   }
   await sleep(1200 + Math.random() * 800);
+}
+
+if (okPages === 0) {
+  if (sawAuthError) {
+    console.error('auth error (401/403): cookies expired — run: node scripts/reseed_x_cookies.mjs');
+    process.exit(2);
+  }
+  console.error('no pages fetched');
+  process.exit(1);
 }
 
 fs.writeFileSync(STATE_FILE, JSON.stringify({ cursor, page, done: true }));

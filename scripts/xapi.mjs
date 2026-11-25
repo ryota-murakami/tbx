@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 
-// Load auth from playwright storage state dump
-const state = JSON.parse(fs.readFileSync('/tmp/pw-state.json', 'utf8'));
+// Load auth from the x-cookie cache (reseed_x_cookies.mjs が書く。期限切れなら対話実行で再キャッシュ)
+const CACHE = new URL('../data/.x-cookies.json', import.meta.url).pathname;
+const state = JSON.parse(fs.readFileSync(CACHE, 'utf8'));
 const xCookies = state.cookies.filter(c => c.domain.endsWith('x.com') || c.domain.endsWith('twitter.com'));
 export const COOKIE = xCookies.map(c => `${c.name}=${c.value}`).join('; ');
 export const CT0 = xCookies.find(c => c.name === 'ct0')?.value ?? '';

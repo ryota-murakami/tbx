@@ -8,3 +8,4 @@ node_modules/
 data/.env
 data/.scrape_state_inc.json
 data/.update.lock
+data/.x-cookies.json

@@ -43,10 +43,17 @@ echo "=== $(date '+%F %T') start ===" >> "$LOG"
 if [ -f data/.env ]; then set -a; . data/.env; set +a; fi
 [ -n "${OPENAI_API_KEY:-}" ] || fail "OPENAI_API_KEY 未設定 (data/.env)"
 
-# 1. Chrome Cookie → /tmp/pw-state.json (x.com 分のみ)
-"$NODE_BIN" "$HOME/.agents/skills/cookie/scripts/export-chrome-cookies.mjs" >> "$LOG" 2>&1 || fail "cookie export"
-"$NODE_BIN" scripts/make_pw_state.mjs >> "$LOG" 2>&1 || fail "pw-state"
-rm -f /tmp/chrome-load-cookies.js /tmp/chrome-pw-cookies.json
+# 1. x/twitter Cookie キャッシュ準備: fresh export を試み、失敗時はキャッシュにフォールバック
+#    launchd 配下では macOS の Chrome データ保護(TCC)により export は失敗するのが通例。
+#    キャッシュも無い/期限切れの場合は、対話セッションで node scripts/reseed_x_cookies.mjs を実行する
+CACHE="data/.x-cookies.json"
+if "$NODE_BIN" scripts/reseed_x_cookies.mjs >> "$LOG" 2>&1; then
+  echo "$(date '+%F %T') cookie: fresh export ok" >> "$LOG"
+elif [ -s "$CACHE" ]; then
+  echo "$(date '+%F %T') cookie: fresh export failed → using cache" >> "$LOG"
+else
+  fail "cookie export (cache 無し) — node scripts/reseed_x_cookies.mjs を対話実行"
+fi
 
 # 2. 既存データの最大時刻 - 2h を増分打ち切りしきい値に
 STOP_TS=$("$NODE_BIN" -e 'try{const i=JSON.parse(require("fs").readFileSync("data/tweets.json","utf8"));console.log(Math.max(...i.map(t=>t.ts))-2*3600e3)}catch(e){console.log(0)}')
@@ -57,7 +64,12 @@ RAW="data/raw$((N + 1))"
 
 # 4. 増分 scrape
 env RAW_DIR="$RAW" STATE_FILE="data/.scrape_state_inc.json" STOP_BEFORE_TS="$STOP_TS" \
-  "$NODE_BIN" scripts/scrape.mjs >> "$LOG" 2>&1 || fail "scrape"
+  "$NODE_BIN" scripts/scrape.mjs >> "$LOG" 2>&1
+scrape_rc=$?
+if [ "$scrape_rc" -eq 2 ]; then
+  fail "X cookie 期限切れ — node scripts/reseed_x_cookies.mjs を対話実行して再キャッシュ"
+fi
+[ "$scrape_rc" -eq 0 ] || fail "scrape"
 
 # 5. 正規化 → 翻訳 → サイト生成
 "$NODE_BIN" scripts/normalize.mjs >> "$LOG" 2>&1 || fail "normalize"
